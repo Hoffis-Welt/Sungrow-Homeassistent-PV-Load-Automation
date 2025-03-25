@@ -29,4 +29,9 @@ Es werden **zwei Automationen** benutzt:
 ![Ablaufdiagramm](doc/images/ablaufdiagram.png)  
 
 
-Hier geht es weiter
+## Dashbord Prognose in Homeassistent
+![Prognose](doc/images/Dashboed-Prognose.png)
+
+
+## Dashbord Zeitsteuerung
+![Prognose](doc/images/Dashboerd-Zeitgesteuert.png)
