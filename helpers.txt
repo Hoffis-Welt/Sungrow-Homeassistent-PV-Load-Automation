@@ -1,0 +1,42 @@
+input_number.faktor_pv_ertrag_vorhersage
+-----------------------------------------
+Ein Faktor von 0-1 um die Ungenauigkeit der Vorhersage auszugleichen. 
+PV Vorhersage wird dadurch weniger und der Ladevorgang wird eher gestartet.
+
+input_number.ladegrenze_grundladung
+-----------------------------------
+Eine Einstellbare Grundladung bis zu dem Füllstand das Akku geladen wird bevor es weiter bis voll geladen wird. 
+
+input_boolean.ladevorgang_aktiv
+-------------------------------
+Eine Hilfsveriable um den Ladevorgang nicht neu zu starten wenn das Akku voll ist.
+Wird mit Sonnenunergang oder 10 Minuten keine PV Produktion zurückgesetzt.
+
+binary_sensor.zeitpunkt_start_laden
+Wird berechnet aus 
+{{ now().astimezone().replace(microsecond=0).isoformat() > strptime(states('sensor.zeitpunkt_akku_laden_beginnen'), '%Y-%m-%dT%H:%M:%S%z').astimezone().replace(microsecond=0).isoformat() }}
+
+sensor.zeitpunkt_akku_laden_beginnen
+Wird berechnet aus
+{{ (strptime(states('sensor.solcast_pv_forecast_zeitpunkt_spitzenleistung_heute'), '%Y-%m-%dT%H:%M:%S%z')
+   + timedelta(minutes=states('input_number.zeitversatz_start_laden') | int))
+   .astimezone()
+   .replace(microsecond=0)
+   .isoformat() }}
+
+   Voraussetzung
+   ist ein installierter und konfigurierter PV Forcast aus dem Addon ha-solcast-solar
+   Quelle und Infos (https://github.com/BJReplay/ha-solcast-solar)
+   Erklärung der Installation https://youtu.be/GKJ96-WoyG0?si=kAASa_5dbl817Bf3
+
+
+
+sensor.restkappazitaet_akku
+Wird berechnet aus
+   {% set rest_im_akku = ((states('sensor.battery_capacity') | float(0)) - (states('sensor.battery_charge') | float(0))) | round(2) %}
+{{ (rest_im_akku) | round(2) }}
+
+sensor.vohersage_pv_ertrag_mit_faktor
+Wird berchnet aus
+{% set pv_leistung_heute = (states('sensor.solcast_pv_forecast_prognose_verbleibende_leistung_heute') | float(2)) | round(2) %}
+{{ (pv_leistung_heute * states('input_number.faktor_pv_ertrag_vorhersage')| float(0)) | round(2)  }}

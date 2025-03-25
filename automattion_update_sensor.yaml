@@ -1,0 +1,13 @@
+alias: Template Sensoren jede Minute aktualisieren
+description: ""
+triggers:
+  - trigger: time_pattern
+    seconds: "20"
+conditions: []
+actions:
+  - action: homeassistant.update_entity
+    metadata: {}
+    data:
+      entity_id:
+        - binary_sensor.zeitpunkt_start_laden
+mode: single

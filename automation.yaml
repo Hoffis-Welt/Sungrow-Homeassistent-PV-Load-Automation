@@ -1,0 +1,189 @@
+alias: Akku Laden - Automation
+description: ""
+triggers:
+  - trigger: state
+    entity_id:
+      - sensor.vohersage_pv_ertrag_mit_faktor
+    id: Prognose mit Faktor hat sich geändert
+  - trigger: state
+    entity_id:
+      - input_number.ladegrenze_grundladung
+    id: Ladegrenze Grundladung hat sich geändert
+  - trigger: state
+    entity_id:
+      - input_number.battery_chargig_limit
+    id: Ladelimit wurde geändert
+  - trigger: state
+    entity_id:
+      - sun.sun
+    to: below_horizon
+    for:
+      hours: 0
+      minutes: 30
+      seconds: 0
+    id: Sonne ist untergegangen
+  - trigger: numeric_state
+    entity_id:
+      - sensor.solar_ertrag_gesamt_2
+    for:
+      hours: 0
+      minutes: 10
+      seconds: 0
+    below: 100
+    id: "Kein PV Ertrag seit 10 Minuten "
+  - trigger: state
+    entity_id:
+      - binary_sensor.zeitpunkt_start_laden
+    from: "off"
+    to: "on"
+    id: Zeitpunkt Start laden
+conditions: []
+actions:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id:
+              - Ladelimit wurde geändert
+              - Ladegrenze Grundladung hat sich geändert
+              - Prognose mit Faktor hat sich geändert
+          - alias: Wenn Rest im Akku < Restlicher PV Ertrag heute * Faktor
+            condition: template
+            value_template: >-
+              {{ (states('sensor.restkappazitaet_akku')| float(0)) <
+              (states('sensor.vohersage_pv_ertrag_mit_faktor')| float(0) ) }}
+          - condition: state
+            entity_id: sensor.ems_mode_selection
+            state: Self-consumption mode (default)
+          - condition: state
+            entity_id: binary_sensor.pv_generating
+            state: "on"
+          - alias: >-
+              ( Ladevorgang AUS ) oder ( Ladevorgang EIN und Akku Limit PV
+              überschritten )
+            condition: or
+            conditions:
+              - condition: state
+                entity_id: input_boolean.ladevorgang_aktiv
+                state: "off"
+              - condition: and
+                conditions:
+                  - condition: state
+                    entity_id: input_boolean.ladevorgang_aktiv
+                    state: "on"
+                  - alias: Batterie Ladung über Limit PV/Netz
+                    condition: numeric_state
+                    entity_id: sensor.battery_level
+                    above: input_number.battery_chargig_limit
+                alias: Wenn ( Ladevorgang EIN und Akku Limit PV überschritten )
+          - alias: Batterieladung über Grund oder PV-Netz Limit
+            condition: or
+            conditions:
+              - alias: Batterie Ladung über Grundladung
+                condition: numeric_state
+                entity_id: sensor.battery_level
+                above: input_number.ladegrenze_grundladung
+              - alias: Batterie Ladung über Limit PV/Netz
+                condition: numeric_state
+                entity_id: sensor.battery_level
+                above: input_number.battery_chargig_limit
+          - alias: >-
+              Zeitsteuerung AUS oder ( Zeitgesteuertes Laden EIN + Zeitpunkt EIN
+              nicht erreicht )  
+            condition: or
+            conditions:
+              - condition: state
+                entity_id: input_boolean.zeitgesteuertes_laden
+                state: "off"
+              - condition: and
+                conditions:
+                  - condition: state
+                    entity_id: input_boolean.zeitgesteuertes_laden
+                    state: "on"
+                  - condition: state
+                    entity_id: binary_sensor.zeitpunkt_start_laden
+                    state: "off"
+                alias: Zeitsteuerung EIN und Zeitpunkt nicht erreicht
+        sequence:
+          - action: notify.mobile_app_pixel_8a
+            metadata: {}
+            data:
+              message: Akku laden gestoppt
+              title: Homeassistent Akku Steuerung
+          - action: script.sg_set_battery_bypass_mode
+            metadata: {}
+            data: {}
+        alias: Akku laden stoppen
+      - conditions:
+          - condition: trigger
+            id:
+              - Ladelimit wurde geändert
+              - Ladegrenze Grundladung hat sich geändert
+              - Prognose mit Faktor hat sich geändert
+          - alias: Wenn Rest im Akku >= Restlicher PV Ertrag heute * Faktor
+            condition: template
+            value_template: >-
+              {{ (states('sensor.restkappazitaet_akku')| float(0)) >=
+              (states('sensor.vohersage_pv_ertrag_mit_faktor')| float(0) ) }}
+          - condition: state
+            entity_id: sensor.ems_mode_selection
+            state: Forced mode
+          - alias: Batterie Ladung unter PV - Netz Limit
+            condition: numeric_state
+            entity_id: sensor.battery_level
+            below: input_number.battery_chargig_limit
+          - condition: state
+            entity_id: input_boolean.zeitgesteuertes_laden
+            state: "off"
+        sequence:
+          - action: input_boolean.turn_on
+            metadata: {}
+            data: {}
+            target:
+              entity_id: input_boolean.ladevorgang_aktiv
+          - action: script.sg_set_self_consumption_mode
+            metadata: {}
+            data: {}
+          - action: notify.mobile_app_pixel_8a
+            metadata: {}
+            data:
+              message: Akku laden gestartet
+              title: Homeassistent Akku Steuerung
+        alias: Akku laden fortsetzten Prognose basiert
+      - conditions:
+          - condition: trigger
+            id:
+              - Zeitpunkt Start laden
+          - condition: state
+            entity_id: input_boolean.zeitgesteuertes_laden
+            state: "on"
+          - condition: state
+            entity_id: input_boolean.ladevorgang_aktiv
+            state: "off"
+        sequence:
+          - action: input_boolean.turn_on
+            metadata: {}
+            data: {}
+            target:
+              entity_id: input_boolean.ladevorgang_aktiv
+          - action: script.sg_set_self_consumption_mode
+            metadata: {}
+            data: {}
+          - action: notify.mobile_app_pixel_8a
+            metadata: {}
+            data:
+              message: Akku laden gestartet
+              title: Homeassistent Akku Steuerung
+        alias: Akku laden fortsetzten Zeitgesteuert
+      - conditions:
+          - condition: trigger
+            id:
+              - Sonne ist untergegangen
+              - "Kein PV Ertrag seit 10 Minuten "
+        sequence:
+          - action: input_boolean.turn_off
+            metadata: {}
+            data: {}
+            target:
+              entity_id: input_boolean.ladevorgang_aktiv
+        alias: Helper Ladevorgang ausschalten
+mode: single
