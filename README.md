@@ -1,23 +1,29 @@
-# Sungrow Homeassistent PV Load Automation
+# Sungrow Home Assistant PV Load Automation
 
+Diese Automation steuert den Ladevorgang eines Sungrow SH10RT-20, um das Akku möglichst netzdienlich zu laden.
 
-Diese Automation steuert den Ladevorgang eines Sungrow SH10RT-20 um das Akku möglichst Netzdienlich zu laden. 
+## Voraussetzungen
 
-Vorrausetzungen
+### Sungrow Wechselrichter Einbindung per Modbus mit der mkaiser Integration  
+**Quelle:**  
+<https://github.com/mkaiser/Sungrow-SHx-Inverter-Modbus-Home-Assistant>  
 
--> Sungrow Wehselrichter Einbindung per Modebus mit der mkaiser Integration
-    Quelle https://github.com/mkaiser/Sungrow-SHx-Inverter-Modbus-Home-Assistant
-    Anleitung https://youtu.be/1Ag35KQM5fM?si=n3hq3-OXY3R_QmRI
-    
--> PV Forcast Integration zur Ermittlung der Vorhersage des zu erwartenden PV Ertrages
-    Quelle -> https://github.com/BJReplay/ha-solcast-solar
-    Anleitung ->  https://youtu.be/GKJ96-WoyG0?si=9yUtBgFlLwt7pDuP
+**Anleitung:**  
+<https://youtu.be/1Ag35KQM5fM?si=n3hq3-OXY3R_QmRI>  
 
-Es werden 2 Automationnen benutzt. 
-In der Hauptautomation läuft die Steuerung das Ladens nach Zeit oder Prognose. 
-Eine 2te Hilfsautomation wird benötigt im den Helfer Sensor zu aktualisieren. Da sich die zu grunde liegenden Werte nicht ändern muss der Sensor aktiv aktualsiert werden. 
+### PV Forecast Integration zur Ermittlung der Vorhersage des zu erwartenden PV-Ertrages  
+**Quelle:**  
+<https://github.com/BJReplay/ha-solcast-solar>  
 
-Ablaufdiagram
-![Ablaufdiagram text](doc/images/ablaufdiagram.png)
+**Anleitung:**  
+<https://youtu.be/GKJ96-WoyG0?si=9yUtBgFlLwt7pDuP>  
 
-TEST
+## Automationen
+
+Es werden **zwei Automationen** benutzt:
+
+1. Die **Hauptautomation** steuert das Laden nach Zeit oder Prognose.  
+2. Eine **Hilfsautomation** wird benötigt, um den Helfer-Sensor zu aktualisieren, da sich die zugrunde liegenden Werte nicht automatisch ändern.  
+
+## Ablaufdiagramm  
+![Ablaufdiagramm](doc/images/ablaufdiagram.png)  
