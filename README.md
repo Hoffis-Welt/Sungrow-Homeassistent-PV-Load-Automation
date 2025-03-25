@@ -10,8 +10,8 @@ Vorrausetzungen
     Anleitung https://youtu.be/1Ag35KQM5fM?si=n3hq3-OXY3R_QmRI
     
 -> PV Forcast Integration zur Ermittlung der Vorhersage des zu erwartenden PV Ertrages
-    Quelle https://github.com/BJReplay/ha-solcast-solar
-    Anleitung https://youtu.be/GKJ96-WoyG0?si=9yUtBgFlLwt7pDuP
+    Quelle -> https://github.com/BJReplay/ha-solcast-solar
+    Anleitung ->  https://youtu.be/GKJ96-WoyG0?si=9yUtBgFlLwt7pDuP
 
 Es werden 2 Automationnen benutzt. 
 In der Hauptautomation läuft die Steuerung das Ladens nach Zeit oder Prognose. 
