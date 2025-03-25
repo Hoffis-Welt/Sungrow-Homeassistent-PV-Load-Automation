@@ -30,8 +30,8 @@ Es werden **zwei Automationen** benutzt:
 
 
 ## Dashbord Prognose in Homeassistent
-![Prognose](doc/images/Dashboed-Prognose.png)
+![Prognose](doc/images/Dashboard-Prognose.png)
 
 
 ## Dashbord Zeitsteuerung
-![Prognose](doc/images/Dashboerd-Zeitgesteuert.png)
+![Prognose](doc/images/Dashboard-Zeitgesteuert.png)
