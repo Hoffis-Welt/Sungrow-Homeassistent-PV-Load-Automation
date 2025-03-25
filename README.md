@@ -18,4 +18,6 @@ In der Hauptautomation läuft die Steuerung das Ladens nach Zeit oder Prognose.
 Eine 2te Hilfsautomation wird benötigt im den Helfer Sensor zu aktualisieren. Da sich die zu grunde liegenden Werte nicht ändern muss der Sensor aktiv aktualsiert werden. 
 
 Ablaufdiagram
-![Ablaufdiagram text](images/ablaufdiagram.png)
+![Ablaufdiagram text](doc/images/ablaufdiagram.png)
+
+TEST
