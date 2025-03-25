@@ -27,3 +27,6 @@ Es werden **zwei Automationen** benutzt:
 
 ## Ablaufdiagramm  
 ![Ablaufdiagramm](doc/images/ablaufdiagram.png)  
+
+
+Hier geht es weiter
