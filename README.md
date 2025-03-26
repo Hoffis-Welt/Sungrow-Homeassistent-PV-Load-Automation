@@ -26,7 +26,7 @@ Es werden **zwei Automationen** benutzt:
 2. Eine **Hilfsautomation** wird benötigt, um den Helfer-Sensor zu aktualisieren, da sich die zugrunde liegenden Werte nicht automatisch ändern.  
 
 ## Ablaufdiagramm  
-![Ablaufdiagramm](doc/images/ablaufdiagram.png)  
+![Ablaufdiagramm](doc/images/Ablaufdiagram_V2.jpg)  
 
 
 ## Dashbord Prognose in Homeassistent
