@@ -16,6 +16,9 @@ binary_sensor.zeitpunkt_start_laden
 Wird berechnet aus 
 {{ now().astimezone().replace(microsecond=0).isoformat() > strptime(states('sensor.zeitpunkt_akku_laden_beginnen'), '%Y-%m-%dT%H:%M:%S%z').astimezone().replace(microsecond=0).isoformat() }}
 
+input_number.zeitversatz_start_laden
+Zeitversatz um die der Start der Ladung variabel verschoben werden kann.
+
 sensor.zeitpunkt_akku_laden_beginnen
 Wird berechnet aus
 {{ (strptime(states('sensor.solcast_pv_forecast_zeitpunkt_spitzenleistung_heute'), '%Y-%m-%dT%H:%M:%S%z')
